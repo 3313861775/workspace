@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.UserMapper">
+    
+    <resultMap id="userMap" type="pojo.User">
+        <result property="id" column="uid"></result>
+        <result property="username" column="username"></result>
+        <collection property="orderList" ofType="pojo.Order" >
+            <result property="id" column="id"></result>
+            <result property="ordertime" column="ordertime"></result>
+            <result property="total" column="total"></result>
+        </collection>
+    </resultMap>
+    
+    <select id="findAll" resultMap="userMap" resultType="pojo.User">
+        SELECT * FROM `user` as u left join `order` as o
+        ON u.id=o.uid
+    </select>
+
+    <resultMap id="roleUser" type="pojo.User">
+        <result property="id" column="user_id"></result>
+        <result property="username" column="username"></result>
+        <collection property="roleList" ofType="pojo.Role">
+            <result property="id" column="role_id"></result>
+            <result property="rolename" column="rolename"></result>
+        </collection>
+    </resultMap>
+    <select id="findAllUserAndRole" resultMap="roleUser">
+        select u.id,u.username ,r.id,r.rolename,ur.user_id,ur.role_id from `user` u left join `user_role` ur on u.id=ur.user_id
+        inner join `role` r on ur.role_id=r.id;
+    </select>
+</mapper>
